@@ -19,6 +19,8 @@ all: $(EXECUTABLE) test
 
 CXXFLAGS =-g -mllvm -print-after-all -mllvm -debug-only=machine-scheduler 
 CXXFLAGS = -mllvm -amdgpu-cluster-all=$(CLUSTERLDS)
+CXXFLAGS = -DUFACTOR=$(UFACTOR) $(EXTRAMLLVM)
+#-mllvm -misched=gcn-minreg 
 
 CXX=$(HIPCC)
 
@@ -28,8 +30,10 @@ $(EXECUTABLE): $(OBJECTS)
 
 
 test: $(EXECUTABLE)
-	/opt/rocm/rocprofiler/bin/rpl_run.sh --obj-tracking on --stats -i m2.xml -o profResult.csv $(EXECUTABLE)
-
+	 rm -rf trace_dir
+	 /opt/rocm/rocprofiler/bin/rpl_run.sh --obj-tracking on --stats -d trace_dir -i m2.xml -o profResult.csv $(EXECUTABLE)
+	 #/opt/rocm/rocprofiler/bin/rpl_run.sh --obj-tracking on --stats -o statresult.csv $(EXECUTABLE)
+#/opt/rocm/rocprofiler/bin/rpl_run.sh --obj-tracking on --stats 
 
 clean:
 	rm -f $(EXECUTABLE)
