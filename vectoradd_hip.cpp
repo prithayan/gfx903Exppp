@@ -58,12 +58,12 @@ vectoradd_float(float* __restrict__ a, const float* __restrict__ b, const float*
       int x = hipBlockDim_x * hipBlockIdx_x + hipThreadIdx_x;
       int y = hipBlockDim_y * hipBlockIdx_y + hipThreadIdx_y;
 
-      __local float sum[128];
+      float sum = 0 ;
       int i = (y * width + x);
 	float temp = c[(i)%(width*height)];
 #pragma unroll  UFACTOR
       for (int index = 0 ; index < 64 ; index ++ ){
-        sum[index] += b[(i+index*1024)%(width*height)] *temp ;
+        sum += b[(i+index*1024)%(width*height)] *temp ;
       }
      a[i] = sum ;
 
